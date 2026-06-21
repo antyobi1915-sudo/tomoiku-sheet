@@ -18,7 +18,7 @@
 
     <header class="bg-[#24a8b4] text-white py-6 px-4 shadow-md text-center">
         <h1 class="text-2xl font-bold tracking-wider">共育シート 集計入力フォーム（わが家版）</h1>
-        <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（1〜5）を入力してください。</p>
+        <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（0〜5）を入力してください。</p>
     </header>
 
     <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -40,7 +40,7 @@
                             <th class="p-3 text-left w-32" rowspan="2">カテゴリ</th>
                             <th class="p-3 text-left w-56" rowspan="2">家事・育児項目</th>
                             <th class="p-2 text-center bg-cyan-50/50" colspan="4">担当割合 (%)</th>
-                            <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (1〜5)</th>
+                            <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (0〜5)</th>
                         </tr>
                         <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500">
                             <th class="p-2 text-center w-16 bg-cyan-50/30">パパ</th>
@@ -81,7 +81,7 @@
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
                     <h3 class="text-lg font-bold text-[#e89451] mb-1">② 心の負担度</h3>
-                    <p class="text-xs text-slate-400 mb-6">しんどさの感じ方 (1〜5)</p>
+                    <p class="text-xs text-slate-400 mb-6">しんどさの感じ方 (0〜5)</p>
                     <div class="w-full max-w-[400px] aspect-square">
                         <canvas id="chart-burden"></canvas>
                     </div>
@@ -101,19 +101,19 @@
         const sheetData = [
             {
                 category: "全体管理",
-                items: ["スケジュール情報の共有・把握", "外部との調整", ""]
+                items: ["スケジュール情報の共有・把握", "外部との調整", "", ""]
             },
             {
                 category: "食事",
-                items: ["朝食の支度・片付け", "昼食（お弁当）の支度・片付け", "夕食の支度・片付け", ""]
+                items: ["朝食の支度・片付け", "昼食（お弁当）の支度・片付け", "夕食の支度・片付け", "", ""]
             },
             {
                 category: "その他家事",
-                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", ""]
+                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", "", ""]
             },
             {
-                category: "育児",
-                items: ["ミルクや離乳食の支度・片付け", "子どもの沐浴・入浴", "おむつ交換", "保育園・幼稚園・学校への送迎", "保育園・幼稚園・学校の持ち物準備", "保育園・幼稚園・学校への身支度補助", "遊ぶ（外遊び・散歩・家の中）", "通院", ""]
+                category: "育児・生活サポート",
+                items: ["ミルクや離乳食の支度・片付け", "子どもの沐浴・入浴", "おむつ交換", "保育園・幼稚園・学校への送迎", "保育園・幼稚園・学校の持ち物準備", "保育園・幼稚園・学校への身支度補助", "遊ぶ（外遊び・散歩・家の中）", "通院", "", ""]
             }
         ];
 
@@ -156,7 +156,7 @@
                     itemCell = `<td class="p-1 border-r border-slate-100"><input type="text" placeholder="＋自由記述（例：ペットの世話など）" class="w-full p-2 border border-dashed border-slate-300 bg-amber-50/10 text-slate-700 rounded text-xs font-medium focus:border-cyan-500 focus:outline-none" data-role="custom-name"></td>`;
                 }
 
-                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 1, b_m: 1, b_c: 1 };
+                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 };
 
                 tr.innerHTML = `
                     ${catCell}
@@ -167,17 +167,17 @@
                     <td class="p-1 bg-cyan-50/10 border-r border-slate-200"><input type="number" value="${d.r_o}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-emerald-700 focus:border-emerald-500 focus:outline-none" data-role="r_o"></td>
                     <td class="p-1 bg-amber-50/10">
                         <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-amber-500 focus:outline-none text-amber-800 font-medium" data-role="b_p">
-                            ${[1,2,3,4,5].map(v => `<option value="${v}" ${d.b_p===v?'selected':''}>${v}</option>`).join('')}
+                            ${[0,1,2,3,4,5].map(v => `<option value="${v}" ${d.b_p===v?'selected':''}>${v}</option>`).join('')}
                         </select>
                     </td>
                     <td class="p-1 bg-amber-50/10">
                         <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-amber-500 focus:outline-none text-amber-800 font-medium" data-role="b_m">
-                            ${[1,2,3,4,5].map(v => `<option value="${v}" ${d.b_m===v?'selected':''}>${v}</option>`).join('')}
+                            ${[0,1,2,3,4,5].map(v => `<option value="${v}" ${d.b_m===v?'selected':''}>${v}</option>`).join('')}
                         </select>
                     </td>
                     <td class="p-1 bg-amber-50/10">
                         <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-amber-500 focus:outline-none text-amber-800 font-medium" data-role="b_c">
-                            ${[1,2,3,4,5].map(v => `<option value="${v}" ${d.b_c===v?'selected':''}>${v}</option>`).join('')}
+                            ${[0,1,2,3,4,5].map(v => `<option value="${v}" ${d.b_c===v?'selected':''}>${v}</option>`).join('')}
                         </select>
                     </td>
                 `;
@@ -214,7 +214,7 @@
         let chartBurdenInstance = null;
         
         function calculateAndRenderCharts() {
-            const categories = ["全体管理", "食事", "その他家事", "育児"];
+            const categories = ["全体管理", "食事", "その他家事", "育児・生活サポート"];
             const summary = {};
             categories.forEach(c => {
                 summary[c] = { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0, count: 0 };
@@ -230,13 +230,13 @@
                 const r_c = parseFloat(row.querySelector('[data-role="r_c"]').value) || 0;
                 const r_o = parseFloat(row.querySelector('[data-role="r_o"]').value) || 0;
 
-                const b_p = parseFloat(row.querySelector('[data-role="b_p"]').value) || 1;
-                const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 1;
-                const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 1;
+                const b_p = parseFloat(row.querySelector('[data-role="b_p"]').value) || 0;
+                const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 0;
+                const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 0;
 
                 if (item === "") {
                     const customNameInput = row.querySelector('[data-role="custom-name"]');
-                    if (customNameInput && !customNameInput.value.trim() && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0) {
+                    if (customNameInput && !customNameInput.value.trim() && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
                         return; 
                     }
                 }
