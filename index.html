@@ -149,18 +149,17 @@
 
                 let catCell = '';
                 if(idx === 0) {
-                    catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200" rowspan="${catGroup.items.length}">${catGroup.category}</td>`;
+                    catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200 text-sm" rowspan="${catGroup.items.length}">${catGroup.category}</td>`;
                 }
 
-                let itemCell = `<td class="p-3 font-medium border-r border-slate-100">${item}</td>`;
+                let itemCell = `<td class="p-3 text-base font-semibold tracking-wide text-slate-700 border-r border-slate-100">${item}</td>`;
                 if (item === "") {
-                    itemCell = `<td class="p-1 border-r border-slate-100"><input type="text" placeholder="＋自由記述（例：ペットの世話など）" class="w-full p-2 border border-dashed border-slate-300 bg-amber-50/10 text-slate-700 rounded text-xs font-medium focus:border-cyan-500 focus:outline-none" data-role="custom-name"></td>`;
+                    itemCell = `<td class="p-1 border-r border-slate-100"><input type="text" placeholder="＋自由記述（例：ペットの世話など）" class="w-full p-2 border border-dashed border-slate-300 bg-amber-50/10 text-slate-700 rounded text-sm font-semibold focus:border-cyan-500 focus:outline-none" data-role="custom-name"></td>`;
                 }
 
                 const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 };
 
-                // 0%から100%まで1%刻みの選択肢（計101個）をループ生成
-                const percentages = Array.from({length: 101}, (_, i) => i);
+                const percentages = Array.from({length: 21}, (_, i) => i * 5);
                 const optionsHtml = (selectedVal) => percentages.map(v => `<option value="${v}" ${selectedVal===v?'selected':''}>${v}%</option>`).join('');
 
                 tr.innerHTML = `
@@ -341,10 +340,10 @@
                 data: {
                     labels: categories,
                     datasets: [
-                        { label: 'パパ', data: dataRatio.p, borderColor: '#1cb0bc', backgroundColor: 'rgba(28, 176, 188, 0.1)', borderWidth: 2, pointBackgroundColor: '#1cb0bc' },
-                        { label: 'ママ', data: dataRatio.m, borderColor: '#e89451', backgroundColor: 'rgba(232, 148, 81, 0.1)', borderWidth: 2, pointBackgroundColor: '#e89451' },
-                        { label: '子ども', data: dataRatio.c, borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.05)', borderWidth: 2, pointBackgroundColor: '#94a3b8' },
-                        { label: '外注/第三者', data: dataRatio.o, borderColor: '#65a30d', backgroundColor: 'rgba(101, 163, 13, 0.05)', borderWidth: 2, pointBackgroundColor: '#65a30d' }
+                        { label: 'パパ', data: dataRatio.p, borderColor: '#1cb0bc', backgroundColor: 'rgba(28, 176, 188, 0.1)', borderWidth: 2, pointBackgroundColor: '#1cb0bc', pointRadius: 2, pointHoverRadius: 4 },
+                        { label: 'ママ', data: dataRatio.m, borderColor: '#e89451', backgroundColor: 'rgba(232, 148, 81, 0.1)', borderWidth: 2, pointBackgroundColor: '#e89451', pointRadius: 2, pointHoverRadius: 4 },
+                        { label: '子ども', data: dataRatio.c, borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.05)', borderWidth: 2, pointBackgroundColor: '#94a3b8', pointRadius: 2, pointHoverRadius: 4 },
+                        { label: '外注/第三者', data: dataRatio.o, borderColor: '#65a30d', backgroundColor: 'rgba(101, 163, 13, 0.05)', borderWidth: 2, pointBackgroundColor: '#65a30d', pointRadius: 2, pointHoverRadius: 4 }
                     ]
                 },
                 options: {
@@ -362,9 +361,9 @@
                 data: {
                     labels: categories,
                     datasets: [
-                        { label: 'パパ', data: dataBurden.p, borderColor: '#1cb0bc', backgroundColor: 'rgba(28, 176, 188, 0.1)', borderWidth: 2, pointBackgroundColor: '#1cb0bc' },
-                        { label: 'ママ', data: dataBurden.m, borderColor: '#e89451', backgroundColor: 'rgba(232, 148, 81, 0.1)', borderWidth: 2, pointBackgroundColor: '#e89451' },
-                        { label: '子ども', data: dataBurden.c, borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.05)', borderWidth: 2, pointBackgroundColor: '#94a3b8' }
+                        { label: 'パパ', data: dataBurden.p, borderColor: '#1cb0bc', backgroundColor: 'rgba(28, 176, 188, 0.1)', borderWidth: 2, pointBackgroundColor: '#1cb0bc', pointRadius: 2, pointHoverRadius: 4 },
+                        { label: 'ママ', data: dataBurden.m, borderColor: '#e89451', backgroundColor: 'rgba(232, 148, 81, 0.1)', borderWidth: 2, pointBackgroundColor: '#e89451', pointRadius: 2, pointHoverRadius: 4 },
+                        { label: '子ども', data: dataBurden.c, borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.05)', borderWidth: 2, pointBackgroundColor: '#94a3b8', pointRadius: 2, pointHoverRadius: 4 }
                     ]
                 },
                 options: {
