@@ -40,6 +40,7 @@
                             <th class="p-3 text-left w-32" rowspan="2">カテゴリ</th>
                             <th class="p-3 text-left w-56" rowspan="2">家事・育児項目</th>
                             <th class="p-2 text-center bg-cyan-50/50" colspan="4">担当割合 (%)</th>
+                            <th class="p-3 text-center w-24 border-l border-r border-slate-200" rowspan="2">合計チェック</th>
                             <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (0〜5)</th>
                         </tr>
                         <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500">
@@ -165,6 +166,7 @@
                     <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_m}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_m"></td>
                     <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_c}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_c"></td>
                     <td class="p-1 bg-cyan-50/10 border-r border-slate-200"><input type="number" value="${d.r_o}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-emerald-700 focus:border-emerald-500 focus:outline-none" data-role="r_o"></td>
+                    <td class="p-1 text-center font-bold text-sm border-r border-slate-200" data-role="total-check">0%</td>
                     <td class="p-1 bg-amber-50/10">
                         <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-amber-500 focus:outline-none text-amber-800 font-medium" data-role="b_p">
                             ${[0,1,2,3,4,5].map(v => `<option value="${v}" ${d.b_p===v?'selected':''}>${v}</option>`).join('')}
@@ -212,6 +214,51 @@
 
         let chartRatioInstance = null;
         let chartBurdenInstance = null;
+
+        function updateTotalCheck(row) {
+            const item = row.dataset.item;
+            const r_p = parseFloat(row.querySelector('[data-role="r_p"]').value) || 0;
+            const r_m = parseFloat(row.querySelector('[data-role="r_m"]').value) || 0;
+            const r_c = parseFloat(row.querySelector('[data-role="r_c"]').value) || 0;
+            const r_o = parseFloat(row.querySelector('[data-role="r_o"]').value) || 0;
+            const total = r_p + r_m + r_c + r_o;
+
+            const totalCell = row.querySelector('[data-role="total-check"]');
+            if (!totalCell) return;
+
+            totalCell.textContent = total + "%";
+
+            if (item === "") {
+                const customNameInput = row.querySelector('[data-role="custom-name"]');
+                const b_p = parseFloat(row.querySelector('[data-role="b_p"]').value) || 0;
+                const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 0;
+                const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 0;
+                
+                if (customNameInput && !customNameInput.value.trim() && total === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
+                    totalCell.className = "p-1 text-center font-medium text-xs text-slate-400 bg-slate-50/50 border-r border-slate-200";
+                    return;
+                }
+            }
+
+            if (total === 100) {
+                totalCell.className = "p-1 text-center font-bold text-sm text-emerald-700 bg-emerald-50 border-r border-slate-200";
+            } else {
+                totalCell.className = "p-1 text-center font-bold text-sm text-rose-600 bg-rose-50 border-r border-slate-200";
+            }
+        }
+
+        formBody.querySelectorAll('tr').forEach(row => updateTotalCheck(row));
+
+        formBody.addEventListener('input', (e) => {
+            const row = e.target.closest('tr');
+            if (row) updateTotalCheck(row);
+        });
+
+        formBody.addEventListener('change', (e) => {
+            const row = e.target.closest('tr');
+            if (row) updateTotalCheck(row);
+        });
+        
         function calculateAndRenderCharts() {
             const categories = ["全体管理", "食事", "その他家事", "育児・生活サポート"];
             const summary = {};
