@@ -34,7 +34,7 @@
 
         <div id="tab-input" class="space-y-6">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 overflow-x-auto">
-                <table class="w-full min-w-[900px] border-collapse text-sm">
+                <table class="w-full min-w-[950px] border-collapse text-sm">
                     <thead>
                         <tr class="bg-slate-100 border-b border-slate-200 text-slate-600">
                             <th class="p-3 text-left w-32" rowspan="2">カテゴリ</th>
@@ -44,10 +44,10 @@
                             <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (0〜5)</th>
                         </tr>
                         <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500">
-                            <th class="p-2 text-center w-16 bg-cyan-50/30">パパ</th>
-                            <th class="p-2 text-center w-16 bg-cyan-50/30">ママ</th>
-                            <th class="p-2 text-center w-16 bg-cyan-50/30">子ども</th>
-                            <th class="p-2 text-center w-20 bg-cyan-50/30">外注/第三者</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">パパ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">ママ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">子ども</th>
+                            <th class="p-2 text-center w-24 bg-cyan-50/30">外注/第三者</th>
                             <th class="p-2 text-center w-16 bg-amber-50/30">パパ</th>
                             <th class="p-2 text-center w-16 bg-amber-50/30">ママ</th>
                             <th class="p-2 text-center w-16 bg-amber-50/30">子ども</th>
@@ -110,7 +110,7 @@
             },
             {
                 category: "その他家事",
-                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", ""]
+                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", "", ""]
             },
             {
                 category: "育児・生活サポート",
@@ -159,13 +159,33 @@
 
                 const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 };
 
+                // 0%から100%まで1%刻みの選択肢（計101個）をループ生成
+                const percentages = Array.from({length: 101}, (_, i) => i);
+                const optionsHtml = (selectedVal) => percentages.map(v => `<option value="${v}" ${selectedVal===v?'selected':''}>${v}%</option>`).join('');
+
                 tr.innerHTML = `
                     ${catCell}
                     ${itemCell}
-                    <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_p}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_p"></td>
-                    <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_m}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_m"></td>
-                    <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_c}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_c"></td>
-                    <td class="p-1 bg-cyan-50/10 border-r border-slate-200"><input type="number" value="${d.r_o}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-emerald-700 focus:border-emerald-500 focus:outline-none" data-role="r_o"></td>
+                    <td class="p-1 bg-cyan-50/10">
+                        <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-cyan-500 focus:outline-none text-cyan-700 font-semibold" data-role="r_p">
+                            ${optionsHtml(d.r_p)}
+                        </select>
+                    </td>
+                    <td class="p-1 bg-cyan-50/10">
+                        <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-cyan-500 focus:outline-none text-cyan-700 font-semibold" data-role="r_m">
+                            ${optionsHtml(d.r_m)}
+                        </select>
+                    </td>
+                    <td class="p-1 bg-cyan-50/10">
+                        <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-cyan-500 focus:outline-none text-cyan-700 font-semibold" data-role="r_c">
+                            ${optionsHtml(d.r_c)}
+                        </select>
+                    </td>
+                    <td class="p-1 bg-cyan-50/10 border-r border-slate-200">
+                        <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-emerald-500 focus:outline-none text-emerald-700 font-semibold" data-role="r_o">
+                            ${optionsHtml(d.r_o)}
+                        </select>
+                    </td>
                     <td class="p-1 text-center font-bold text-sm border-r border-slate-200" data-role="total-check">0%</td>
                     <td class="p-1 bg-amber-50/10">
                         <select class="w-full text-center p-1 border border-slate-200 rounded focus:border-amber-500 focus:outline-none text-amber-800 font-medium" data-role="b_p">
@@ -257,19 +277,6 @@
         formBody.addEventListener('change', (e) => {
             const row = e.target.closest('tr');
             if (row) updateTotalCheck(row);
-        });
-
-        formBody.addEventListener('focusin', (e) => {
-            if (e.target.type === 'number' && parseFloat(e.target.value) === 0) {
-                e.target.value = '';
-            }
-        });
-
-        formBody.addEventListener('focusout', (e) => {
-            if (e.target.type === 'number' && e.target.value === '') {
-                e.target.value = '0';
-                updateTotalCheck(e.target.closest('tr'));
-            }
         });
         
         function calculateAndRenderCharts() {
