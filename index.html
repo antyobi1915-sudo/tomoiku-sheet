@@ -110,7 +110,7 @@
             },
             {
                 category: "その他家事",
-                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", "", ""]
+                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", ""]
             },
             {
                 category: "育児・生活サポート",
@@ -257,6 +257,19 @@
         formBody.addEventListener('change', (e) => {
             const row = e.target.closest('tr');
             if (row) updateTotalCheck(row);
+        });
+
+        formBody.addEventListener('focusin', (e) => {
+            if (e.target.type === 'number' && parseFloat(e.target.value) === 0) {
+                e.target.value = '';
+            }
+        });
+
+        formBody.addEventListener('focusout', (e) => {
+            if (e.target.type === 'number' && e.target.value === '') {
+                e.target.value = '0';
+                updateTotalCheck(e.target.closest('tr'));
+            }
         });
         
         function calculateAndRenderCharts() {
