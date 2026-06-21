@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody id="form-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
@@ -101,22 +101,21 @@
         const sheetData = [
             {
                 category: "全体管理",
-                items: ["スケジュール情報の共有・把握", "外部との調整"]
+                items: ["スケジュール情報の共有・把握", "外部との調整", ""]
             },
             {
                 category: "食事",
-                items: ["朝食の支度・片付け", "昼食（お弁当）の支度・片付け", "夕食の支度・片付け"]
+                items: ["朝食の支度・片付け", "昼食（お弁当）の支度・片付け", "夕食の支度・片付け", ""]
             },
             {
                 category: "その他家事",
-                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）"]
+                items: ["洗濯（洗う・干す・たたむ・しまう）", "掃除（リビング・キッチン・洗面・お風呂・トイレ）", "買い出し", "ゴミ出し（回収・分別・出す）", ""]
             },
             {
                 category: "育児",
-                items: ["ミルクや離乳食の支度・片付け", "子どもの沐浴・入浴", "おむつ交換", "保育園・幼稚園・学校への送迎", "保育園・幼稚園・学校の持ち物準備", "保育園・幼稚園・学校への身支度補助", "遊ぶ（外遊び・散歩・家の中）", "通院"]
+                items: ["ミルクや離乳食の支度・片付け", "子どもの沐浴・入浴", "おむつ交換", "保育園・幼稚園・学校への送迎", "保育園・幼稚園・学校の持ち物準備", "保育園・幼稚園・学校への身支度補助", "遊ぶ（外遊び・散歩・家の中）", "通院", ""]
             }
         ];
-
 
         const defaultValues = {
             "スケジュール情報の共有・把握": { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 },
@@ -139,7 +138,6 @@
         };
 
         const formBody = document.getElementById('form-body');
-        let itemIndex = 0;
 
         sheetData.forEach(catGroup => {
             catGroup.items.forEach((item, idx) => {
@@ -153,11 +151,16 @@
                     catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200" rowspan="${catGroup.items.length}">${catGroup.category}</td>`;
                 }
 
-                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 };
+                let itemCell = `<td class="p-3 font-medium border-r border-slate-100">${item}</td>`;
+                if (item === "") {
+                    itemCell = `<td class="p-1 border-r border-slate-100"><input type="text" placeholder="＋自由記述（例：ペットの世話など）" class="w-full p-2 border border-dashed border-slate-300 bg-amber-50/10 text-slate-700 rounded text-xs font-medium focus:border-cyan-500 focus:outline-none" data-role="custom-name"></td>`;
+                }
+
+                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 1, b_m: 1, b_c: 1 };
 
                 tr.innerHTML = `
                     ${catCell}
-                    <td class="p-3 font-medium border-r border-slate-100">${item}</td>
+                    ${itemCell}
                     <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_p}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_p"></td>
                     <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_m}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_m"></td>
                     <td class="p-1 bg-cyan-50/10"><input type="number" value="${d.r_c}" class="w-full text-center p-1 border border-slate-200 rounded input-percentage font-semibold text-cyan-700 focus:border-cyan-500 focus:outline-none" data-role="r_c"></td>
@@ -209,20 +212,19 @@
 
         let chartRatioInstance = null;
         let chartBurdenInstance = null;
+        
         function calculateAndRenderCharts() {
             const categories = ["全体管理", "食事", "その他家事", "育児"];
             const summary = {};
             categories.forEach(c => {
-                summary[c] = {
-                    r_p: 0, r_m: 0, r_c: 0, r_o: 0,
-                    b_p: 0, b_m: 0, b_c: 0,
-                    count: 0
-                };
+                summary[c] = { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0, count: 0 };
             });
 
             const rows = formBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const cat = row.dataset.category;
+                const item = row.dataset.item;
+
                 const r_p = parseFloat(row.querySelector('[data-role="r_p"]').value) || 0;
                 const r_m = parseFloat(row.querySelector('[data-role="r_m"]').value) || 0;
                 const r_c = parseFloat(row.querySelector('[data-role="r_c"]').value) || 0;
@@ -231,6 +233,13 @@
                 const b_p = parseFloat(row.querySelector('[data-role="b_p"]').value) || 1;
                 const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 1;
                 const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 1;
+
+                if (item === "") {
+                    const customNameInput = row.querySelector('[data-role="custom-name"]');
+                    if (customNameInput && !customNameInput.value.trim() && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0) {
+                        return; 
+                    }
+                }
 
                 summary[cat].r_p += r_p;
                 summary[cat].r_m += r_m;
