@@ -153,7 +153,7 @@
                     catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200" rowspan="${catGroup.items.length}">${catGroup.category}</td>`;
                 }
 
-                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 1, b_m: 1, b_c: 1 };
+                const d = defaultValues[item] || { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0 };
 
                 tr.innerHTML = `
                     ${catCell}
