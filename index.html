@@ -17,7 +17,7 @@
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
     <header class="bg-[#24a8b4] text-white py-6 px-4 shadow-md text-center">
-        <h1 class="text-2xl font-bold tracking-wider">共育シート 集計入力フォーム（わが家版）</h1>
+        <h1 class="text-2xl font-bold tracking-wider">共育シート 集集入力フォーム（わが家版）</h1>
         <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（0〜5）を入力してください。</p>
     </header>
 
@@ -89,9 +89,9 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 max-w-4xl mx-auto mt-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 max-w-5xl mx-auto mt-6">
                 <h3 class="text-base font-bold text-slate-700 mb-4 text-center">ワンオペ判定の基準</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs text-center">
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs text-center">
                     <div class="p-3 rounded-lg bg-red-100 text-red-700 border border-red-200">
                         <div class="font-bold text-sm mb-1">完全ワンオペ</div>
                         <div class="text-slate-600">どちらかの割合が100%</div>
@@ -100,9 +100,13 @@
                         <div class="font-bold text-sm mb-1">ワンオペ気味</div>
                         <div class="text-slate-600">どちらかの割合が80%〜95%</div>
                     </div>
+                    <div class="p-3 rounded-lg bg-orange-50 text-orange-600 border border-orange-100">
+                        <div class="font-bold text-sm mb-1">片方に偏り</div>
+                        <div class="text-slate-600">どちらかの割合が60%〜75%</div>
+                    </div>
                     <div class="p-3 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">
                         <div class="font-bold text-sm mb-1">バランス良好</div>
-                        <div class="text-slate-600">双方の割合が80%未満</div>
+                        <div class="text-slate-600">双方の割合が60%未満</div>
                     </div>
                     <div class="p-3 rounded-lg bg-amber-50 text-amber-700 border border-amber-100">
                         <div class="font-bold text-sm mb-1">入力エラー</div>
@@ -412,6 +416,12 @@
                     } else if (r.r_m >= 80) {
                         statusText = "ワンオペ気味 (ママ)";
                         statusClass = "text-rose-600 bg-rose-50 font-semibold text-xs";
+                    } else if (r.r_p >= 60) {
+                        statusText = "片方に偏り (パパ)";
+                        statusClass = "text-orange-600 bg-orange-50 font-semibold text-xs";
+                    } else if (r.r_m >= 60) {
+                        statusText = "片方に偏り (ママ)";
+                        statusClass = "text-orange-600 bg-orange-50 font-semibold text-xs";
                     } else {
                         statusText = "バランス良好";
                         statusClass = "text-emerald-700 bg-emerald-50 font-semibold text-xs";
