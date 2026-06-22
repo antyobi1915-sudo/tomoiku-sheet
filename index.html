@@ -21,9 +21,18 @@
         <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（0〜5）を入力してください。</p>
     </header>
 
-    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-12">
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         
-        <div class="space-y-6">
+        <div class="flex border-b border-slate-200 mb-6 bg-white rounded-t-lg shadow-sm overflow-hidden">
+            <button id="btn-input" class="flex-1 py-4 text-center font-bold text-[#24a8b4] border-b-4 border-[#24a8b4] bg-slate-50 transition-all focus:outline-none">
+                ① 入力シート
+            </button>
+            <button id="btn-result" class="flex-1 py-4 text-center font-bold text-slate-500 hover:text-slate-700 border-b-4 border-transparent transition-all focus:outline-none">
+                ② 集計結果 & グラフ
+            </button>
+        </div>
+
+        <div id="tab-input" class="space-y-6">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 overflow-x-auto">
                 <table class="w-full min-w-[950px] border-collapse text-sm">
                     <thead>
@@ -50,16 +59,16 @@
             </div>
 
             <div class="text-center pt-4">
-                <button id="btn-scroll" class="bg-[#24a8b4] hover:bg-[#1d8c96] text-white font-bold px-10 py-4 rounded-xl shadow-lg transition-all text-lg cursor-pointer">
-                    集計結果とグラフを見る ⬇
+                <button id="btn-submit" class="bg-[#24a8b4] hover:bg-[#1d8c96] text-white font-bold px-10 py-4 rounded-xl shadow-lg transition-all text-lg cursor-pointer">
+                    集計結果とグラフを見る ➔
                 </button>
             </div>
         </div>
 
-        <div id="result-section" class="space-y-10 pt-10 border-t border-slate-200">
+        <div id="tab-result" class="hidden space-y-10">
             <div class="text-center max-w-xl mx-auto">
                 <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">わが家の共育度</h2>
-                <p class="text-slate-500 mt-1">トモイクシート集計結果（リアルタイム反映中）</p>
+                <p class="text-slate-500 mt-1">トモイクシート集計結果より</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -78,6 +87,60 @@
                         <canvas id="chart-burden"></canvas>
                     </div>
                 </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 max-w-4xl mx-auto mt-6">
+                <h3 class="text-base font-bold text-slate-700 mb-4 text-center">💡 ワンオペ判定の基準</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs text-center">
+                    <div class="p-3 rounded-lg bg-red-100 text-red-700 border border-red-200">
+                        <div class="font-bold text-sm mb-1">完全ワンオペ</div>
+                        <div class="text-slate-600">どちらかの割合が100%</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-rose-50 text-rose-600 border border-rose-100">
+                        <div class="font-bold text-sm mb-1">ワンオペ気味</div>
+                        <div class="text-slate-600">どちらかの割合が80%〜95%</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        <div class="font-bold text-sm mb-1">バランス良好</div>
+                        <div class="text-slate-600">双方の割合が80%未満</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-amber-50 text-amber-700 border border-amber-100">
+                        <div class="font-bold text-sm mb-1">入力エラー</div>
+                        <div class="text-slate-600">合計が100%にならない</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 overflow-x-auto mt-8">
+                <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">📊 入力結果一覧</h3>
+                <table class="w-full min-w-[950px] border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                            <th class="p-3 text-left w-32" rowspan="2">カテゴリ</th>
+                            <th class="p-3 text-left w-56" rowspan="2">家事・育児項目</th>
+                            <th class="p-2 text-center bg-cyan-50/50" colspan="4">担当割合 (%)</th>
+                            <th class="p-3 text-center w-36 border-l border-r border-slate-200" rowspan="2">ワンオペ判定</th>
+                            <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (0〜5)</th>
+                        </tr>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500">
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">パパ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">ママ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">子ども</th>
+                            <th class="p-2 text-center w-24 bg-cyan-50/30">外注/第三者</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">パパ</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">ママ</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">子ども</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center pt-4">
+                <button id="btn-back" class="border-2 border-slate-300 hover:bg-slate-100 text-slate-600 font-bold px-8 py-3 rounded-xl transition-all cursor-pointer">
+                    ⬅ 入力画面に戻る
+                </button>
             </div>
         </div>
 
@@ -191,9 +254,30 @@
             });
         });
 
-        document.getElementById('btn-scroll').addEventListener('click', () => {
-            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
-        });
+        const btnInput = document.getElementById('btn-input');
+        const btnResult = document.getElementById('btn-result');
+        const tabInput = document.getElementById('tab-input');
+        const tabResult = document.getElementById('tab-result');
+
+        function switchTab(toResult) {
+            if(toResult) {
+                tabInput.classList.add('hidden');
+                tabResult.classList.remove('hidden');
+                btnResult.className = "flex-1 py-4 text-center font-bold text-[#24a8b4] border-b-4 border-[#24a8b4] bg-slate-50 transition-all focus:outline-none";
+                btnInput.className = "flex-1 py-4 text-center font-bold text-slate-500 hover:text-slate-700 border-b-4 border-transparent transition-all focus:outline-none";
+                calculateAndRenderCharts();
+            } else {
+                tabResult.classList.add('hidden');
+                tabInput.classList.remove('hidden');
+                btnInput.className = "flex-1 py-4 text-center font-bold text-[#24a8b4] border-b-4 border-[#24a8b4] bg-slate-50 transition-all focus:outline-none";
+                btnResult.className = "flex-1 py-4 text-center font-bold text-slate-500 hover:text-slate-700 border-b-4 border-transparent transition-all focus:outline-none";
+            }
+        }
+
+        btnInput.addEventListener('click', () => switchTab(false));
+        btnResult.addEventListener('click', () => switchTab(true));
+        document.getElementById('btn-submit').addEventListener('click', () => switchTab(true));
+        document.getElementById('btn-back').addEventListener('click', () => switchTab(false));
 
         let chartRatioInstance = null;
         let chartBurdenInstance = null;
@@ -230,28 +314,38 @@
             }
         }
 
-        function handleDataChange(e) {
-            const row = e.target.closest('tr');
-            if (row) {
-                updateTotalCheck(row);
-            }
-            calculateAndRenderCharts();
-        }
+        formBody.querySelectorAll('tr').forEach(row => updateTotalCheck(row));
 
-        formBody.addEventListener('input', handleDataChange);
-        formBody.addEventListener('change', handleDataChange);
+        formBody.addEventListener('input', (e) => {
+            const row = e.target.closest('tr');
+            if (row) updateTotalCheck(row);
+        });
+
+        formBody.addEventListener('change', (e) => {
+            const row = e.target.closest('tr');
+            if (row) updateTotalCheck(row);
+        });
         
         function calculateAndRenderCharts() {
             const categories = ["全体管理", "食事", "その他家事", "育児・生活サポート"];
             const summary = {};
+            const validRowsByCategory = {};
+            
             categories.forEach(c => {
                 summary[c] = { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0, count: 0 };
+                validRowsByCategory[c] = [];
             });
 
             const rows = formBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const cat = row.dataset.category;
                 const item = row.dataset.item;
+
+                let itemName = item;
+                if (item === "") {
+                    const customNameInput = row.querySelector('[data-role="custom-name"]');
+                    itemName = customNameInput ? customNameInput.value.trim() : "";
+                }
 
                 const r_p = parseFloat(row.querySelector('[data-role="r_p"]').value) || 0;
                 const r_m = parseFloat(row.querySelector('[data-role="r_m"]').value) || 0;
@@ -262,12 +356,17 @@
                 const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 0;
                 const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 0;
 
-                if (item === "") {
-                    const customNameInput = row.querySelector('[data-role="custom-name"]');
-                    if (customNameInput && !customNameInput.value.trim() && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
-                        return; 
-                    }
+                if (item === "" && !itemName && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
+                    return; 
                 }
+
+                const total = r_p + r_m + r_c + r_o;
+
+                validRowsByCategory[cat].push({
+                    name: itemName || "（未入力の項目）",
+                    r_p, r_m, r_c, r_o, total,
+                    b_p, b_m, b_c
+                });
 
                 summary[cat].r_p += r_p;
                 summary[cat].r_m += r_m;
@@ -281,19 +380,73 @@
                 summary[cat].count += 1;
             });
 
+            const resultBody = document.getElementById('result-body');
+            resultBody.innerHTML = '';
+
+            categories.forEach(cat => {
+                const rowList = validRowsByCategory[cat];
+                rowList.forEach((r, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-100 bg-white text-slate-700";
+
+                    let catCell = '';
+                    if (idx === 0) {
+                        catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200 text-sm" rowspan="${rowList.length}">${cat}</td>`;
+                    }
+
+                    let statusText = "";
+                    let statusClass = "";
+
+                    if (r.total !== 100) {
+                        statusText = `入力エラー (${r.total}%)`;
+                        statusClass = "text-amber-700 bg-amber-50 font-bold text-xs";
+                    } else if (r.r_p === 100) {
+                        statusText = "完全ワンオペ (パパ)";
+                        statusClass = "text-red-700 bg-red-100 font-bold text-xs";
+                    } else if (r.r_m === 100) {
+                        statusText = "完全ワンオペ (ママ)";
+                        statusClass = "text-red-700 bg-red-100 font-bold text-xs";
+                    } else if (r.r_p >= 80) {
+                        statusText = "ワンオペ気味 (パパ)";
+                        statusClass = "text-rose-600 bg-rose-50 font-semibold text-xs";
+                    } else if (r.r_m >= 80) {
+                        statusText = "ワンオペ気味 (ママ)";
+                        statusClass = "text-rose-600 bg-rose-50 font-semibold text-xs";
+                    } else {
+                        statusText = "バランス良好";
+                        statusClass = "text-emerald-700 bg-emerald-50 font-semibold text-xs";
+                    }
+
+                    tr.innerHTML = `
+                        ${catCell}
+                        <td class="p-3 text-base font-semibold tracking-wide text-slate-700 border-r border-slate-100">${r.name}</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_p}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_m}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_c}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-emerald-700 border-r border-slate-200">${r.r_o}%</td>
+                        <td class="p-2 text-center border-r border-slate-200 ${statusClass}">${statusText}</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_p}</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_m}</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_c}</td>
+                    `;
+                    resultBody.appendChild(tr);
+                });
+            });
+
             const dataRatio = { p: [], m: [], c: [], o: [] };
             const dataBurden = { p: [], m: [], c: [] };
 
             categories.forEach(c => {
                 const s = summary[c];
-                dataRatio.p.push((s.r_p / s.count).toFixed(1));
-                dataRatio.m.push((s.r_m / s.count).toFixed(1));
-                dataRatio.c.push((s.r_c / s.count).toFixed(1));
-                dataRatio.o.push((s.r_o / s.count).toFixed(1));
+                const cnt = s.count || 1;
+                dataRatio.p.push((s.r_p / cnt).toFixed(1));
+                dataRatio.m.push((s.r_m / cnt).toFixed(1));
+                dataRatio.c.push((s.r_c / cnt).toFixed(1));
+                dataRatio.o.push((s.r_o / cnt).toFixed(1));
 
-                dataBurden.p.push((s.b_p / s.count).toFixed(1));
-                dataBurden.m.push((s.b_m / s.count).toFixed(1));
-                dataBurden.c.push((s.b_c / s.count).toFixed(1));
+                dataBurden.p.push((s.b_p / cnt).toFixed(1));
+                dataBurden.m.push((s.b_m / cnt).toFixed(1));
+                dataBurden.c.push((s.b_c / cnt).toFixed(1));
             });
 
             if(chartRatioInstance) chartRatioInstance.destroy();
@@ -337,9 +490,6 @@
                 }
             });
         }
-
-        formBody.querySelectorAll('tr').forEach(row => updateTotalCheck(row));
-        calculateAndRenderCharts();
     </script>
 </body>
 </html>
