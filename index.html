@@ -18,7 +18,7 @@
 
     <header class="bg-[#24a8b4] text-white py-6 px-4 shadow-md text-center">
         <h1 class="text-2xl font-bold tracking-wider">共育シート 集計入力フォーム（わが家版）</h1>
-        <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（0〜5）を入力してください。※ブラウザを閉じると保存されません。</p>
+        <p class="text-sm mt-2 opacity-90">各項目について、担当割合（合計100%）と心の負担度（0〜5）を入力してください。</p>
     </header>
 
     <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -87,6 +87,32 @@
                         <canvas id="chart-burden"></canvas>
                     </div>
                 </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 overflow-x-auto mt-8">
+                <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">📊 入力結果一覧</h3>
+                <table class="w-full min-w-[950px] border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-100 border-b border-slate-200 text-slate-600">
+                            <th class="p-3 text-left w-32" rowspan="2">カテゴリ</th>
+                            <th class="p-3 text-left w-56" rowspan="2">家事・育児項目</th>
+                            <th class="p-2 text-center bg-cyan-50/50" colspan="4">担当割合 (%)</th>
+                            <th class="p-3 text-center w-24 border-l border-r border-slate-200" rowspan="2">合計</th>
+                            <th class="p-2 text-center bg-amber-50/50" colspan="3">心の負担度 (0〜5)</th>
+                        </tr>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500">
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">パパ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">ママ</th>
+                            <th class="p-2 text-center w-20 bg-cyan-50/30">子ども</th>
+                            <th class="p-2 text-center w-24 bg-cyan-50/30">外注/第三者</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">パパ</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">ママ</th>
+                            <th class="p-2 text-center w-16 bg-amber-50/30">子ども</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body">
+                    </tbody>
+                </table>
             </div>
 
             <div class="text-center pt-4">
@@ -277,17 +303,27 @@
             const row = e.target.closest('tr');
             if (row) updateTotalCheck(row);
         });
+        
         function calculateAndRenderCharts() {
             const categories = ["全体管理", "食事", "その他家事", "育児・生活サポート"];
             const summary = {};
+            const validRowsByCategory = {};
+            
             categories.forEach(c => {
                 summary[c] = { r_p: 0, r_m: 0, r_c: 0, r_o: 0, b_p: 0, b_m: 0, b_c: 0, count: 0 };
+                validRowsByCategory[c] = [];
             });
 
             const rows = formBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const cat = row.dataset.category;
                 const item = row.dataset.item;
+
+                let itemName = item;
+                if (item === "") {
+                    const customNameInput = row.querySelector('[data-role="custom-name"]');
+                    itemName = customNameInput ? customNameInput.value.trim() : "";
+                }
 
                 const r_p = parseFloat(row.querySelector('[data-role="r_p"]').value) || 0;
                 const r_m = parseFloat(row.querySelector('[data-role="r_m"]').value) || 0;
@@ -298,12 +334,17 @@
                 const b_m = parseFloat(row.querySelector('[data-role="b_m"]').value) || 0;
                 const b_c = parseFloat(row.querySelector('[data-role="b_c"]').value) || 0;
 
-                if (item === "") {
-                    const customNameInput = row.querySelector('[data-role="custom-name"]');
-                    if (customNameInput && !customNameInput.value.trim() && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
-                        return; 
-                    }
+                if (item === "" && !itemName && r_p === 0 && r_m === 0 && r_c === 0 && r_o === 0 && b_p === 0 && b_m === 0 && b_c === 0) {
+                    return; 
                 }
+
+                const total = r_p + r_m + r_c + r_o;
+
+                validRowsByCategory[cat].push({
+                    name: itemName || "（未入力の項目）",
+                    r_p, r_m, r_c, r_o, total,
+                    b_p, b_m, b_c
+                });
 
                 summary[cat].r_p += r_p;
                 summary[cat].r_m += r_m;
@@ -317,19 +358,55 @@
                 summary[cat].count += 1;
             });
 
+            const resultBody = document.getElementById('result-body');
+            resultBody.innerHTML = '';
+
+            categories.forEach(cat => {
+                const rowList = validRowsByCategory[cat];
+                rowList.forEach((r, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-100 bg-white text-slate-700";
+
+                    let catCell = '';
+                    if (idx === 0) {
+                        catCell = `<td class="p-3 font-bold text-slate-600 bg-slate-50/80 border-r border-slate-200 text-sm" rowspan="${rowList.length}">${cat}</td>`;
+                    }
+
+                    let totalClass = "text-rose-600 bg-rose-50 font-bold";
+                    if (r.total === 100) {
+                        totalClass = "text-emerald-700 bg-emerald-50 font-bold";
+                    }
+
+                    tr.innerHTML = `
+                        ${catCell}
+                        <td class="p-3 text-base font-semibold tracking-wide text-slate-700 border-r border-slate-100">${r.name}</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_p}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_m}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-cyan-700">${r.r_c}%</td>
+                        <td class="p-2 text-center bg-cyan-50/5 font-semibold text-emerald-700 border-r border-slate-200">${r.r_o}%</td>
+                        <td class="p-2 text-center border-r border-slate-200 ${totalClass}">${r.total}%</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_p}</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_m}</td>
+                        <td class="p-2 text-center bg-amber-50/5 font-medium text-amber-800">${r.b_c}</td>
+                    `;
+                    resultBody.appendChild(tr);
+                });
+            });
+
             const dataRatio = { p: [], m: [], c: [], o: [] };
             const dataBurden = { p: [], m: [], c: [] };
 
             categories.forEach(c => {
                 const s = summary[c];
-                dataRatio.p.push((s.r_p / s.count).toFixed(1));
-                dataRatio.m.push((s.r_m / s.count).toFixed(1));
-                dataRatio.c.push((s.r_c / s.count).toFixed(1));
-                dataRatio.o.push((s.r_o / s.count).toFixed(1));
+                const cnt = s.count || 1;
+                dataRatio.p.push((s.r_p / cnt).toFixed(1));
+                dataRatio.m.push((s.r_m / cnt).toFixed(1));
+                dataRatio.c.push((s.r_c / cnt).toFixed(1));
+                dataRatio.o.push((s.r_o / cnt).toFixed(1));
 
-                dataBurden.p.push((s.b_p / s.count).toFixed(1));
-                dataBurden.m.push((s.b_m / s.count).toFixed(1));
-                dataBurden.c.push((s.b_c / s.count).toFixed(1));
+                dataBurden.p.push((s.b_p / cnt).toFixed(1));
+                dataBurden.m.push((s.b_m / cnt).toFixed(1));
+                dataBurden.c.push((s.b_c / cnt).toFixed(1));
             });
 
             if(chartRatioInstance) chartRatioInstance.destroy();
