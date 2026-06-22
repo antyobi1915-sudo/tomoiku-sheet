@@ -22,12 +22,13 @@
     </header>
 
     <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        
         <div class="flex border-b border-slate-200 mb-6 bg-white rounded-t-lg shadow-sm overflow-hidden">
             <button id="btn-input" class="flex-1 py-4 text-center font-bold text-[#24a8b4] border-b-4 border-[#24a8b4] bg-slate-50 transition-all focus:outline-none">
-                ① 入力シート
+                1. 入力シート
             </button>
             <button id="btn-result" class="flex-1 py-4 text-center font-bold text-slate-500 hover:text-slate-700 border-b-4 border-transparent transition-all focus:outline-none">
-                ② 集計結果 & グラフ
+                2. 集計結果 & グラフ
             </button>
         </div>
 
@@ -59,7 +60,7 @@
 
             <div class="text-center pt-4">
                 <button id="btn-submit" class="bg-[#24a8b4] hover:bg-[#1d8c96] text-white font-bold px-10 py-4 rounded-xl shadow-lg transition-all text-lg cursor-pointer">
-                    集計結果とグラフを見る ➔
+                    集計結果とグラフを見る
                 </button>
             </div>
         </div>
@@ -72,7 +73,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                    <h3 class="text-lg font-bold text-[#24a8b4] mb-1">① 担当割合</h3>
+                    <h3 class="text-lg font-bold text-[#24a8b4] mb-1">1. 担当割合</h3>
                     <p class="text-xs text-slate-400 mb-6">誰がどれだけ担っているか (%)</p>
                     <div class="w-full max-w-[400px] aspect-square">
                         <canvas id="chart-ratio"></canvas>
@@ -80,7 +81,7 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                    <h3 class="text-lg font-bold text-[#e89451] mb-1">② 心の負担度</h3>
+                    <h3 class="text-lg font-bold text-[#e89451] mb-1">2. 心の負担度</h3>
                     <p class="text-xs text-slate-400 mb-6">しんどさの感じ方 (0〜5)</p>
                     <div class="w-full max-w-[400px] aspect-square">
                         <canvas id="chart-burden"></canvas>
@@ -138,7 +139,7 @@
 
             <div class="text-center pt-4">
                 <button id="btn-back" class="border-2 border-slate-300 hover:bg-slate-100 text-slate-600 font-bold px-8 py-3 rounded-xl transition-all cursor-pointer">
-                    ⬅ 入力画面に戻る
+                    入力画面に戻る
                 </button>
             </div>
         </div>
